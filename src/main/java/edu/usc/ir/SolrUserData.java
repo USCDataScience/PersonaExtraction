@@ -1,17 +1,19 @@
-/*
- *	Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
-*/
-
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package edu.usc.ir;
 
@@ -32,96 +34,67 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 public class SolrUserData {
 
-	@Option(name="-h",usage="Host Name")
-	private   String host;
-	
-	@Option(name="-s",usage="Solr URL")
-	private   String solrurl;
-	
+  @Option(name = "-h", usage = "Host Name")
+  private String host;
 
-	public void processArgs(String[] args) throws IOException, ClassNotFoundException {
-		CmdLineParser parser = new CmdLineParser(this);
-		try {
-            // parse the arguments.
-            parser.parseArgument(args);
+  @Option(name = "-s", usage = "Solr URL")
+  private String solrurl;
 
-            // you can parse additional arguments if you want.
-            // parser.parseArgument("more","args");
+  public void processArgs(String[] args)
+      throws IOException, ClassNotFoundException {
+    CmdLineParser parser = new CmdLineParser(this);
+    try {
+      parser.parseArgument(args);
+    } catch (CmdLineException e) {
+      e.printStackTrace();
+      System.err.println("java Executor [options...] arguments...");
+      parser.printUsage(System.err);
+      return;
+    }
+  }
 
-        } catch( CmdLineException e ) {
-            // if there's a problem in the command line,
-            // you'll get this exception. this will report
-            // an error message.
-            System.err.println(e.getMessage());
-            System.err.println("java Executor [options...] arguments...");
-            // print the list of available options
-            parser.printUsage(System.err);
-            System.err.println();
+  public void gedata() throws SolrServerException, IOException {
+    UserExtractor user = new UserExtractor();
+    HashMap<String, ArrayList<String>> Map = user.persons(host);
 
-            return;
-        }
-		
-	}
-	
-	public void gedata() throws SolrServerException, IOException
-	{
-		UserExtractor user = new UserExtractor();
-		HashMap<String, ArrayList<String>> Map = user.persons(host);
-	
-	//	String urlString = "http://localhost:8983/solr/WeaponsData";
-		String urlString = solrurl;
-		
-		HttpSolrServer server = new HttpSolrServer(urlString);
-		
-		for (Entry<String, ArrayList<String>> entry : Map.entrySet()) {
-			
-	        System.out.print("HTML DOC ID - "+entry.getKey()+"\n");
-	        System.out.println("--USERNAME--");
-	        for(String id : entry.getValue()){
-	            System.out.print(id+"\n");
-	        }
-	        System.out.println();
-	    }
-		
-		
+    String urlString = solrurl;
 
-		for (Entry<String, ArrayList<String>> entry : Map.entrySet()) {
-			if(entry.getValue().isEmpty())
-			{
-				SolrInputDocument doc = new SolrInputDocument();
-			      doc.addField("id", entry.getKey());
-			      doc.addField("persons", "");
-			      server.add(doc);
-			}
-			else
-			{
-			SolrInputDocument doc = new SolrInputDocument();
-		      doc.addField("id", entry.getKey());
-		      doc.addField("persons", entry.getValue());
-		      
-		      server.add(doc);
-			}
-		}
-	    
-	      
-	      
-	       
-	      
-	      
-	      //document is indexed  and boosted by value 2
-	        // periodically flush
-	    
-	    server.commit();
-	}
-	
-	
-	public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException, SolrServerException,ClassNotFoundException  {
-		// TODO Auto-generated method stub
-		
-		SolrUserData executor = new SolrUserData();
-		executor.processArgs(args);
-		executor.gedata();
-	
-	}
+    HttpSolrServer server = new HttpSolrServer(urlString);
+
+    for (Entry<String, ArrayList<String>> entry : Map.entrySet()) {
+      System.out.print("HTML DOC ID - " + entry.getKey() + "\n");
+      System.out.println("--USERNAME--");
+      for (String id : entry.getValue()) {
+        System.out.print(id + "\n");
+      }
+      System.out.println();
+    }
+
+    for (Entry<String, ArrayList<String>> entry : Map.entrySet()) {
+      if (entry.getValue().isEmpty()) {
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.addField("id", entry.getKey());
+        doc.addField("persons", "");
+        server.add(doc);
+      } else {
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.addField("id", entry.getKey());
+        doc.addField("persons", entry.getValue());
+
+        server.add(doc);
+      }
+    }
+
+    server.commit();
+  }
+
+  public static void main(String[] args)
+      throws FailingHttpStatusCodeException, MalformedURLException, IOException,
+      SolrServerException, ClassNotFoundException {
+    SolrUserData executor = new SolrUserData();
+    executor.processArgs(args);
+    executor.gedata();
+
+  }
 
 }
