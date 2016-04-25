@@ -10,7 +10,7 @@
 	<name>PersonaExtraction</name>
 
 	<description>Persona extraction from crawled HTML documents.</description>
-	<url>https://github.com/shivensaiwal/PersonaExtraction</url>
+	<url>https://github.com/USCDataScience/PersonaExtraction</url>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
