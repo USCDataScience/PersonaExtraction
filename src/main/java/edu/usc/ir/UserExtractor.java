@@ -111,15 +111,12 @@ public class UserExtractor {
 
         String url = "http://imagecat.dyndns.org/weapons/alldata/com/" + domain
             + "/www/" + htmldocs.get(j);
-        System.out.println(j + "\t" + url);
         HtmlPage htmlPage = webclient.getPage(url);
 
         @SuppressWarnings("unchecked")
         List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage
             .getByXPath(pattern);
         for (int i = 0; i < anchor.size(); i++) {
-
-          // System.out.println(anchor.get(i).getHrefAttribute());
           String link = anchor.get(i).getHrefAttribute();
           if (link.toLowerCase().contains("php")) {
             continue;
