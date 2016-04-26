@@ -62,4 +62,19 @@ public class Persona {
     this.url = url;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("[url=");
+    builder.append(this.url.toString());
+    builder.append(",personas=");
+    builder.append(this.usernames.toString());
+    builder.append("]");
+    return builder.toString();
+    
+  }
+
 }

@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,6 +97,7 @@ public class PersonaExtractor {
     webClient.getOptions().setThrowExceptionOnScriptError(false);
     HtmlPage htmlPage = webClient.getPage(page.toURL());
     Persona persona = new Persona();
+    persona.setUrl(new URL("http://"+host));
 
     List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage
         .getByXPath(patterns.get(host));
