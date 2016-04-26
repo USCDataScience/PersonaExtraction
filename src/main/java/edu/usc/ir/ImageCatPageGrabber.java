@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.print.attribute.standard.OutputDeviceAssigned;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -43,7 +41,6 @@ import com.gargoylesoftware.htmlunit.DefaultCredentialsProvider;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.sun.corba.se.impl.util.PackagePrefixChecker;
 
 public class ImageCatPageGrabber {
 
@@ -79,6 +76,14 @@ public class ImageCatPageGrabber {
 
   private static Logger LOG = Logger
       .getLogger(ImageCatPageGrabber.class.getName());
+  
+  
+
+  /**
+   * Default constructor.
+   */
+  public ImageCatPageGrabber() {
+  }
 
   /**
    * Grabs pages from the JPL ImageCat Web mount using a Solr query for
@@ -188,6 +193,132 @@ public class ImageCatPageGrabber {
       parser.printUsage(System.err);
       throw e;
     }
+  }
+
+  /**
+   * @return the username
+   */
+  public String getUsername() {
+    return username;
+  }
+
+  /**
+   * @param username the username to set
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
+   * @return the password
+   */
+  public String getPassword() {
+    return password;
+  }
+
+  /**
+   * @param password the password to set
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  /**
+   * @return the imagecatUrl
+   */
+  public URL getImagecatUrl() {
+    return imagecatUrl;
+  }
+
+  /**
+   * @param imagecatUrl the imagecatUrl to set
+   */
+  public void setImagecatUrl(URL imagecatUrl) {
+    this.imagecatUrl = imagecatUrl;
+  }
+
+  /**
+   * @return the outDir
+   */
+  public File getOutDir() {
+    return outDir;
+  }
+
+  /**
+   * @param outDir the outDir to set
+   */
+  public void setOutDir(File outDir) {
+    this.outDir = outDir;
+  }
+
+  /**
+   * @return the hostPart
+   */
+  public String getHostPart() {
+    return hostPart;
+  }
+
+  /**
+   * @param hostPart the hostPart to set
+   */
+  public void setHostPart(String hostPart) {
+    this.hostPart = hostPart;
+  }
+
+  /**
+   * @return the pagePrefix
+   */
+  public String getPagePrefix() {
+    return pagePrefix;
+  }
+
+  /**
+   * @param pagePrefix the pagePrefix to set
+   */
+  public void setPagePrefix(String pagePrefix) {
+    this.pagePrefix = pagePrefix;
+  }
+
+  /**
+   * @return the start
+   */
+  public int getStart() {
+    return start;
+  }
+
+  /**
+   * @param start the start to set
+   */
+  public void setStart(int start) {
+    this.start = start;
+  }
+
+  /**
+   * @return the rows
+   */
+  public int getRows() {
+    return rows;
+  }
+
+  /**
+   * @param rows the rows to set
+   */
+  public void setRows(int rows) {
+    this.rows = rows;
+  }
+
+  /**
+   * @return the arguments
+   */
+  public List<String> getArguments() {
+    return arguments;
+  }
+
+  /**
+   * @param arguments the arguments to set
+   */
+  public void setArguments(List<String> arguments) {
+    this.arguments = arguments;
   }
 
 }
