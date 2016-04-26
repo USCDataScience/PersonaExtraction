@@ -122,6 +122,8 @@
    -->   
    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" /> 
    <field name="persons" type="string" indexed="true" stored="true" required="true" multiValued="true" /> 
+   <field name="host" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+   <field name="searchable_host" type="text_general" stored="false" required="false" multiValued="true"/>
         
 
    <!-- Common metadata fields, named specifically to match up with
@@ -255,6 +257,11 @@
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
         or to add multiple fields to the same field for easier/faster searching.  -->
+
+   <copyField source="host" dest="searchable_host"/>
+   <copyField source="id" dest="text"/>
+   <copyField source="persons" dest="text"/>
+   <copyField source="searchable_host" dest="text"/>
 
    <!-- Text fields from SolrCell to search by default in our catch-all field -->
    <copyField source="title" dest="text"/>

@@ -25,10 +25,10 @@ public class Persona {
 
   private List<String> usernames;
 
-  private URL url;
+  private String pageId;
 
   public Persona() {
-    this.url = null;
+    this.pageId = null;
     this.usernames = new ArrayList<String>();
   }
 
@@ -48,19 +48,20 @@ public class Persona {
   }
 
   /**
-   * @return the url
+   * @return the pageId
    */
-  public URL getUrl() {
-    return url;
+  public String getPageId() {
+    return pageId;
   }
 
   /**
-   * @param url
-   *          the url to set
+   * @param pageId the pageId to set
    */
-  public void setUrl(URL url) {
-    this.url = url;
+  public void setPageId(String pageId) {
+    this.pageId = pageId;
   }
+
+
 
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
@@ -68,13 +69,13 @@ public class Persona {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("[url=");
-    builder.append(this.url.toString());
+    builder.append("[pageId=");
+    builder.append(this.pageId);
     builder.append(",personas=");
     builder.append(this.usernames.toString());
     builder.append("]");
     return builder.toString();
     
   }
-
+ 
 }

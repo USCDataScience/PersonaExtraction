@@ -79,7 +79,7 @@ public class PersonaExtractor {
 
     Map<String, Persona> personaMap = new HashMap<String, Persona>();
     for (String host : this.patterns.keySet()) {
-      personaMap.put(host, obtainPersonas(host));
+      personaMap.put(this.page.toURL().toString(), obtainPersonas(host));
     }
 
     return personaMap;
@@ -97,7 +97,7 @@ public class PersonaExtractor {
     webClient.getOptions().setThrowExceptionOnScriptError(false);
     HtmlPage htmlPage = webClient.getPage(page.toURL());
     Persona persona = new Persona();
-    persona.setUrl(new URL("http://"+host));
+    persona.setPageId(page.toURI().toString());
 
     List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage
         .getByXPath(patterns.get(host));

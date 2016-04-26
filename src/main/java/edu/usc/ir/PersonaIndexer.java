@@ -104,12 +104,12 @@ public class PersonaIndexer {
     }
 
     LOG.info("Obtained personas: [" + personas.toString() + "]: indexing.");
-    for (String hostKey : personas.keySet()) {
-      if (!personas.get(hostKey).getUsernames().isEmpty()) {
-        LOG.info("Adding personas for: [" + hostKey + "]");
-        indexPersona(personas.get(hostKey));
+    for (String pageIdKey : personas.keySet()) {
+      if (!personas.get(pageIdKey).getUsernames().isEmpty()) {
+        LOG.info("Adding personas for: [" + pageIdKey + "]");
+        indexPersona(personas.get(pageIdKey));
       } else {
-        LOG.warning("Host: [" + hostKey + "]: No personas extracted.");
+        LOG.warning("Page Id: [" + pageIdKey + "]: No personas extracted.");
       }
 
     }
@@ -119,6 +119,7 @@ public class PersonaIndexer {
   public void indexPersona(Persona persona)
       throws FileNotFoundException, IOException, SolrServerException {
 
+    String pageId = persona.getPageId();
     SolrServer server = null;
     if (this.username != null && this.password != null) {
       BasicCredentialsProvider provider = new BasicCredentialsProvider();
@@ -138,15 +139,15 @@ public class PersonaIndexer {
 
     if (persona.getUsernames().size() > 0) {
       SolrInputDocument doc = new SolrInputDocument();
-      String host = persona.getUrl().toString();
       List<String> users = persona.getUsernames();
-      doc.addField("id", host);
+      doc.addField("id", pageId);
       doc.addField("persons", users);
+      doc.addField("host", host);
       server.add(doc);
-      LOG.info("Indexing: Host: [" + host + "]: Personas: " + users
+      LOG.info("Indexing: Page Id: ["+pageId+"]: Host: [" + host + "]: Personas: " + users
           + " to Solr: [" + this.solrUrl.toString() + "]");
     } else {
-      LOG.info("Host: [" + host + "]: No persons extracted.");
+      LOG.info("Page Id: [" + pageId + "]: No persons extracted.");
     }
 
     server.commit();

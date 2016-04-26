@@ -1,21 +1,51 @@
-# PersonaExtraction
-Extraction of user details from weapons dataset.
+USC Persona Extraction
+======================
 
-#Build Details
-1) Create Solr Collection and add field "id" and "persons" <br/>
-2) git clone https://github.com/shivensaiwal/PersonaExtraction.git <br/>
-3) mvn assembly:assembly
+This project provides an XPath related approach to automatically 
+extracting usernames, persona information and other data from 
+unstructured text.
 
-# Execution Details
-1) Jar created at target folder <br/>
-3) Require username and password in config.properties <br/> 
-2) Pass host and solr url as parameter to jar <br/>
-	Example: java -jar target/PersonaExtraction-0.0.1-SNAPSHOT-jar-with-dependencies.jar -h "www.slickguns.com" -s "http://localhost:8983/solr/WeaponsData"
+Getting Started
+===============
 
-#Results
-Solr collection created with HTML-Document Id and Usernames
+ 1. `git clone https://github.com/USCDataScience/PersonaExtraction.git1`
+ 2. `cd PersonaExtraction`
+ 3. `mvn install assembly:assembly`
+ 
+Persona Extraction
+==================
 
-#Note
-Working for hostnames <br/>
-1) www.hipointfirearmsforums.com <br/>
-2) www.slickguns.com
+To run the extractor, do the following:
+
+ 1. Run `src/main/bin/persona_extract $HOST $PAGE`
+
+The `$HOST` parameter defines what host patterns to pull from 
+`src/main/resources/patterns.conf`, e.g., `www.hipointfirearmsforums.com`.
+The `$PAGE` parameter is a path to a downloaded or already available web
+page that you would like to extract from.
+
+Persona Indexing
+================
+
+You can run the PersonaExtractor on a directory full of documents and then
+index into an [Apache Solr](http://lucene.apache.org/solr/) server. To do
+so, run the following:
+
+ 1. Run `src/main/bin/persona_indexer $HOST $SOLR_URL`
+ 
+$HOST should be the patterns to select based on `src/main/resources/patterns.conf`.
+$SOLR_URL should be the full path to your solr index, e.g., 
+`http://localhost:8080/solr/persona-agora`
+
+Questions, comments?
+===================
+Send them to [Chris Mattmann](chris.a.mattmann@jpl.nasa.gov).
+
+Contributors
+============
+* Chris A. Mattmann, USC & JPL
+* Shiven Saiwal, USC
+
+License
+=======
+[Apache License, version 2](http://www.apache.org/licenses/LICENSE-2.0)
