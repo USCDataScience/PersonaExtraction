@@ -38,6 +38,7 @@ import org.kohsuke.args4j.Option;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class PersonaExtractor {
@@ -98,16 +99,30 @@ public class PersonaExtractor {
     HtmlPage htmlPage = webClient.getPage(page.toURL());
     Persona persona = new Persona();
     persona.setPageId(page.toURI().toString());
+    
+    String pattern = patterns.get(host);
+    boolean isAnchor = false;
+    if (pattern.contains("@href")){
+      isAnchor = true;
+    }
 
-    List<HtmlAnchor> anchor = (List<HtmlAnchor>) htmlPage
+    List<?> elements = htmlPage
         .getByXPath(patterns.get(host));
-    for (int i = 0; i < anchor.size(); i++) {
-      String link = anchor.get(i).getHrefAttribute();
-      if (isUserLink(link)) {
-        int index = link.lastIndexOf('/');
-        String username = link.substring(index + 1);
-        persona.getUsernames().add(username);
+    for (int i = 0; i < elements.size(); i++) {
+      String username = null;
+      if (isAnchor){
+        String link = ((HtmlAnchor)elements.get(i)).getHrefAttribute();
+        if (isUserLink(link)) {
+          int index = link.lastIndexOf('/');
+          username = link.substring(index + 1);
+        }        
       }
+      else{
+          username = ((HtmlElement)elements.get(i)).asText();
+      }
+      persona.getUsernames().add(username);
+
+    
     }
 
     webClient.closeAllWindows();
