@@ -20,7 +20,11 @@ export HOST=$1
 export PAGE=$2
 export SOLR_URL=$3
 
+echo "Page $PAGE"
+
 java -classpath target/PersonaExtraction-0.0.2-SNAPSHOT-jar-with-dependencies.jar \
+     -Djava.util.logging.config.file=src/main/resources/logging.properties \
      edu.usc.ir.PersonaIndexer -c src/main/resources/patterns.properties \
-     -h $HOST -d $PAGE -u $PERSONA_HTTP_USER -p $PERSONA_HTTP_PASS \
+     -h $HOST -d $PAGE \
+     -u $PERSONA_HTTP_USER -p $PERSONA_HTTP_PASS \
      -s $SOLR_URL

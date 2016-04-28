@@ -20,5 +20,6 @@ export HOST=$1
 export PAGE=$2
 
 java -classpath target/PersonaExtraction-0.0.2-SNAPSHOT-jar-with-dependencies.jar \
+     -Djava.util.logging.config.file=src/main/resources/logging.properties \
      edu.usc.ir.PersonaExtractor -c src/main/resources/patterns.properties \
      -h $HOST -p $PAGE

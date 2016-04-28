@@ -78,8 +78,12 @@ public class PersonaExtractor {
       initPatterns();
 
     Map<String, Persona> personaMap = new HashMap<String, Persona>();
+    LOG.info("Scanning patterns: Num Patterns: ["+this.patterns.keySet().size()+"]: Config File: ["+this.configFile.getAbsolutePath()+"]");
     for (String host : this.patterns.keySet()) {
-      personaMap.put(this.page.toURL().toString(), obtainPersonas(host));
+      LOG.info("Extracting persons for pattern: ["+this.patterns.get(host)+"]: hostKey: ["+host+"]");
+      Persona persona = obtainPersonas(host);
+      LOG.info("Extracted persona: "+persona);
+      personaMap.put(this.page.toURL().toString(), persona);
     }
 
     return personaMap;

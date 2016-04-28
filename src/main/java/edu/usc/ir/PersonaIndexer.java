@@ -103,10 +103,9 @@ public class PersonaIndexer {
       }
     }
 
-    LOG.info("Obtained personas: [" + personas.toString() + "]: indexing.");
     for (String pageIdKey : personas.keySet()) {
       if (!personas.get(pageIdKey).getUsernames().isEmpty()) {
-        LOG.info("Adding personas for: [" + pageIdKey + "]");
+        LOG.info("Obtained personas: [" + personas.toString() + "]: for page: ["+pageIdKey+"]: indexing.");
         indexPersona(personas.get(pageIdKey));
       } else {
         LOG.warning("Page Id: [" + pageIdKey + "]: No personas extracted.");
