@@ -125,7 +125,7 @@ public class PersonaExtractor {
     
     }
 
-    webClient.closeAllWindows();
+    webClient.close();
     return persona;
   }
 

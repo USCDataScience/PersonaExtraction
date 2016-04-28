@@ -147,7 +147,7 @@ public class ImageCatPageGrabber {
       FileUtils.writeStringToFile(outPage, content);
     }
 
-    webclient.closeAllWindows();
+    webclient.close();
   }
 
   public static void main(String[] args) throws IOException, SolrServerException {    
