@@ -99,9 +99,18 @@ public class PersonaExtractor {
     webClient.getOptions().setJavaScriptEnabled(false);
     webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
     webClient.getOptions().setThrowExceptionOnScriptError(false);
-    HtmlPage htmlPage = webClient.getPage(page.toURL());
+    HtmlPage htmlPage = null;
     Persona persona = new Persona();
     persona.setPageId(page.toURI().toString());
+
+    try{
+      htmlPage = webClient.getPage(page.toURL());
+    }
+    catch(Exception e){
+      e.printStackTrace(System.out);
+      webClient.close();
+      return persona;
+    }
     
     String pattern = patterns.get(host);
     boolean isAnchor = false;

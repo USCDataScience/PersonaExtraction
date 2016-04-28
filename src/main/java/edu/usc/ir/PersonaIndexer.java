@@ -105,7 +105,7 @@ public class PersonaIndexer {
 
     for (String pageIdKey : personas.keySet()) {
       if (!personas.get(pageIdKey).getUsernames().isEmpty()) {
-        LOG.info("Obtained personas: [" + personas.toString() + "]: for page: ["+pageIdKey+"]: indexing.");
+        LOG.info("Obtained personas: [" + personas.get(pageIdKey).toString() + "]: for page: ["+pageIdKey+"]: indexing.");
         indexPersona(personas.get(pageIdKey));
       } else {
         LOG.warning("Page Id: [" + pageIdKey + "]: No personas extracted.");
