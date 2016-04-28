@@ -31,9 +31,11 @@ You can run the PersonaExtractor on a directory full of documents and then
 index into an [Apache Solr](http://lucene.apache.org/solr/) server. To do
 so, run the following:
 
- 1. Run `src/main/bin/persona_indexer $HOST $SOLR_URL`
+ 1. Run `src/main/bin/persona_indexer $HOST $DIR $SOLR_URL`
  
 $HOST should be the patterns to select based on `src/main/resources/patterns.conf`.
+$DIR is a directory of HTML files to scan and then perform persona extraction on,
+for each file.
 $SOLR_URL should be the full path to your solr index, e.g., 
 `http://localhost:8080/solr/persona-agora`
 
