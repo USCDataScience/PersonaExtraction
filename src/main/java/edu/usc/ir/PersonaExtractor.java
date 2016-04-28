@@ -118,7 +118,7 @@ public class PersonaExtractor {
       }
       else{
          if (elements.get(i) instanceof String){
-           username = (String)elements.get(i);
+           username = ((String)elements.get(i)).trim();
          }
          else{
           username = ((DomNode)elements.get(i)).asText();
