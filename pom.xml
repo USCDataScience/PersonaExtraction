@@ -52,7 +52,7 @@
 					</descriptors>
 					<archive>
 						<manifest>
-							<mainClass>edu.usc.ir.SolrUserData</mainClass>
+							<mainClass>edu.usc.ir.PersonaIndexer</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
