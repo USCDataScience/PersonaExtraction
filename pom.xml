@@ -30,7 +30,7 @@
 	</developers>
 	<scm>
 		<url>https://github.com/USCDataScience/PersonaExtraction.git</url>
-		<connection>scm:git:git://github.com/USCDataScience/PersonaExtraction.git</connection>
+		<connection>scm:git:https://github.com/USCDataScience/PersonaExtraction.git</connection>
 	</scm>
 
 
