@@ -85,26 +85,31 @@ public class PersonaIndexer {
     PersonaExtractor extractor = new PersonaExtractor();
     extractor.setConfigFile(this.configFile);
     extractor.setHost(this.host);
-    Map<String, Persona> personas = new HashMap<String, Persona>();
 
     if (this.pageDir.exists() && this.pageDir.isDirectory()) {
       for (File page : this.pageDir.listFiles()) {
         extractor.setPage(page);
 
-        Map<String, Persona> persMap = extractor.obtainPersonasForAllHosts();
-        merge(persMap, personas);
+        if (this.host != null && 
+            !this.host.equals("")){
+          Persona persona = extractor.obtainPersonas(this.host);
+          LOG.info("Obtained personas: [" + persona.toString() + "]: for page: ["+persona.getPageId()+"] indexing.");
+          indexPersona(persona);          
+        }
+        else{
+          Map<String, Persona> personas = extractor.obtainPersonasForAllHosts();
+          Persona aggregate = collect(personas);
+          if(!aggregate.getUsernames().isEmpty()) {
+              LOG.info("Obtained personas: [" + aggregate.toString() + "]: for page: ["+aggregate.getPageId()+"] indexing.");
+              indexPersona(aggregate);
+          }
+          
+        }
+        
       }
     }
 
-    for (String pageIdKey : personas.keySet()) {
-      if (!personas.get(pageIdKey).getUsernames().isEmpty()) {
-        LOG.info("Obtained personas: [" + personas.get(pageIdKey).toString() + "]: for page: ["+pageIdKey+"]: indexing.");
-        indexPersona(personas.get(pageIdKey));
-      } else {
-        LOG.warning("Page Id: [" + pageIdKey + "]: No personas extracted.");
-      }
 
-    }
   }
 
   @SuppressWarnings("deprecation")
@@ -156,6 +161,91 @@ public class PersonaIndexer {
     }
   }
 
+  /**
+   * @return the pageDir
+   */
+  public File getPageDir() {
+    return pageDir;
+  }
+
+  /**
+   * @param pageDir the pageDir to set
+   */
+  public void setPageDir(File pageDir) {
+    this.pageDir = pageDir;
+  }
+
+  /**
+   * @return the configFile
+   */
+  public File getConfigFile() {
+    return configFile;
+  }
+
+  /**
+   * @param configFile the configFile to set
+   */
+  public void setConfigFile(File configFile) {
+    this.configFile = configFile;
+  }
+
+  /**
+   * @return the host
+   */
+  public String getHost() {
+    return host;
+  }
+
+  /**
+   * @param host the host to set
+   */
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  /**
+   * @return the username
+   */
+  public String getUsername() {
+    return username;
+  }
+
+  /**
+   * @param username the username to set
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
+   * @return the password
+   */
+  public String getPassword() {
+    return password;
+  }
+
+  /**
+   * @param password the password to set
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  /**
+   * @return the solrUrl
+   */
+  public URL getSolrUrl() {
+    return solrUrl;
+  }
+
+  /**
+   * @param solrUrl the solrUrl to set
+   */
+  public void setSolrUrl(URL solrUrl) {
+    this.solrUrl = solrUrl;
+  }
+  
+
   private void processArgs(String[] args) throws CmdLineException {
     CmdLineParser parser = new CmdLineParser(this);
     try {
@@ -172,6 +262,27 @@ public class PersonaIndexer {
       throw e;
     }
   }
+  
+  private Persona collect(Map<String, Persona> personas){
+    Persona aggregate = new Persona(); 
+    
+    for (String hostPatternKey : personas.keySet()) {
+      Persona persona = personas.get(hostPatternKey);
+      if (aggregate.getPageId() == null){
+        aggregate.setPageId(persona.getPageId()); // only once
+      }
+      if (!persona.getUsernames().isEmpty()) {
+        LOG.info("Obtained personas: [" + persona.toString() + "]: for page: ["+persona.getPageId()+"]: host pattern: ["+hostPatternKey+"] collecting.");
+        aggregate.getUsernames().addAll(persona.getUsernames());
+      }
+      else{
+        LOG.warning("Page Id: [" + persona.getPageId() + "]: No personas extracted.");
+      }
+    }
+    
+    return aggregate;
+
+  }
 
   private void initPatterns() throws FileNotFoundException, IOException {
     if (this.configFile != null) {
@@ -182,16 +293,6 @@ public class PersonaIndexer {
         LOG.finest("Adding pattern: [" + props.getProperty(propString)
             + "] for host: [" + propString + "]");
         this.patterns.put(propString, props.getProperty(propString));
-      }
-    }
-  }
-
-  private void merge(Map<String, Persona> from, Map<String, Persona> to) {
-    for (String fromKey : from.keySet()) {
-      if (to.containsKey(fromKey)) {
-        to.get(fromKey).getUsernames().addAll(from.get(fromKey).getUsernames());
-      } else {
-        to.put(fromKey, from.get(fromKey));
       }
     }
   }

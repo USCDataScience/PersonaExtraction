@@ -21,15 +21,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.list.SetUniqueList;
+
 public class Persona {
 
   private List<String> usernames;
 
   private String pageId;
 
+  @SuppressWarnings("unchecked")
   public Persona() {
     this.pageId = null;
-    this.usernames = new ArrayList<String>();
+    this.usernames = (List<String>)SetUniqueList.decorate(new ArrayList<String>());
   }
 
   /**

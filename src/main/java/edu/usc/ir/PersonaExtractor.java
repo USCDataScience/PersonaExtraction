@@ -79,11 +79,11 @@ public class PersonaExtractor {
 
     Map<String, Persona> personaMap = new HashMap<String, Persona>();
     LOG.info("Scanning patterns: Num Patterns: ["+this.patterns.keySet().size()+"]: Config File: ["+this.configFile.getAbsolutePath()+"]");
-    for (String host : this.patterns.keySet()) {
+    for (String patternKey : this.patterns.keySet()) {
       LOG.info("Extracting persons for pattern: ["+this.patterns.get(host)+"]: hostKey: ["+host+"]");
-      Persona persona = obtainPersonas(host);
+      Persona persona = obtainPersonas(patternKey);
       LOG.info("Extracted persona: "+persona);
-      personaMap.put(this.page.toURL().toString(), persona);
+      personaMap.put(patternKey, persona);
     }
 
     return personaMap;
@@ -137,7 +137,11 @@ public class PersonaExtractor {
           username = ((DomNode)elements.get(i)).asText();
          }
       }
-      persona.getUsernames().add(username);
+      
+      if (username != null && 
+          !username.equals("")){
+        persona.getUsernames().add(username);
+      }
 
     
     }
