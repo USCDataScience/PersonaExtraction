@@ -90,25 +90,24 @@ public class PersonaIndexer {
       for (File page : this.pageDir.listFiles()) {
         extractor.setPage(page);
 
-        if (this.host != null && 
-            !this.host.equals("")){
+        if (this.host != null && !this.host.equals("")) {
           Persona persona = extractor.obtainPersonas(this.host);
-          LOG.info("Obtained personas: [" + persona.toString() + "]: for page: ["+persona.getPageId()+"] indexing.");
-          indexPersona(persona);          
-        }
-        else{
+          LOG.info("Obtained personas: [" + persona.toString()
+              + "]: for page: [" + persona.getPageId() + "] indexing.");
+          indexPersona(persona);
+        } else {
           Map<String, Persona> personas = extractor.obtainPersonasForAllHosts();
           Persona aggregate = collect(personas);
-          if(!aggregate.getUsernames().isEmpty()) {
-              LOG.info("Obtained personas: [" + aggregate.toString() + "]: for page: ["+aggregate.getPageId()+"] indexing.");
-              indexPersona(aggregate);
+          if (!aggregate.getUsernames().isEmpty()) {
+            LOG.info("Obtained personas: [" + aggregate.toString()
+                + "]: for page: [" + aggregate.getPageId() + "] indexing.");
+            indexPersona(aggregate);
           }
-          
+
         }
-        
+
       }
     }
-
 
   }
 
@@ -135,14 +134,16 @@ public class PersonaIndexer {
       initPatterns();
 
     if (persona.getUsernames().size() > 0) {
+      String hostPatternKey = persona.getHostPatternKey();
       SolrInputDocument doc = new SolrInputDocument();
       List<String> users = persona.getUsernames();
       doc.addField("id", pageId);
       doc.addField("persons", users);
-      doc.addField("host", host);
+      doc.addField("host", hostPatternKey);
       server.add(doc);
-      LOG.info("Indexing: Page Id: ["+pageId+"]: Host: [" + host + "]: Personas: " + users
-          + " to Solr: [" + this.solrUrl.toString() + "]");
+      LOG.info("Indexing: Page Id: [" + pageId + "]: Host: [" + host
+          + "]: Personas: " + users + " to Solr: [" + this.solrUrl.toString()
+          + "]");
     } else {
       LOG.info("Page Id: [" + pageId + "]: No persons extracted.");
     }
@@ -169,7 +170,8 @@ public class PersonaIndexer {
   }
 
   /**
-   * @param pageDir the pageDir to set
+   * @param pageDir
+   *          the pageDir to set
    */
   public void setPageDir(File pageDir) {
     this.pageDir = pageDir;
@@ -183,7 +185,8 @@ public class PersonaIndexer {
   }
 
   /**
-   * @param configFile the configFile to set
+   * @param configFile
+   *          the configFile to set
    */
   public void setConfigFile(File configFile) {
     this.configFile = configFile;
@@ -197,7 +200,8 @@ public class PersonaIndexer {
   }
 
   /**
-   * @param host the host to set
+   * @param host
+   *          the host to set
    */
   public void setHost(String host) {
     this.host = host;
@@ -211,7 +215,8 @@ public class PersonaIndexer {
   }
 
   /**
-   * @param username the username to set
+   * @param username
+   *          the username to set
    */
   public void setUsername(String username) {
     this.username = username;
@@ -225,7 +230,8 @@ public class PersonaIndexer {
   }
 
   /**
-   * @param password the password to set
+   * @param password
+   *          the password to set
    */
   public void setPassword(String password) {
     this.password = password;
@@ -239,12 +245,12 @@ public class PersonaIndexer {
   }
 
   /**
-   * @param solrUrl the solrUrl to set
+   * @param solrUrl
+   *          the solrUrl to set
    */
   public void setSolrUrl(URL solrUrl) {
     this.solrUrl = solrUrl;
   }
-  
 
   private void processArgs(String[] args) throws CmdLineException {
     CmdLineParser parser = new CmdLineParser(this);
@@ -262,24 +268,32 @@ public class PersonaIndexer {
       throw e;
     }
   }
-  
-  private Persona collect(Map<String, Persona> personas){
-    Persona aggregate = new Persona(); 
-    
+
+  private Persona collect(Map<String, Persona> personas) {
+    Persona aggregate = new Persona();
+
     for (String hostPatternKey : personas.keySet()) {
       Persona persona = personas.get(hostPatternKey);
-      if (aggregate.getPageId() == null){
+      if (aggregate.getPageId() == null) {
         aggregate.setPageId(persona.getPageId()); // only once
       }
       if (!persona.getUsernames().isEmpty()) {
-        LOG.info("Obtained personas: [" + persona.toString() + "]: for page: ["+persona.getPageId()+"]: host pattern: ["+hostPatternKey+"] collecting.");
+        LOG.info("Obtained personas: [" + persona.toString() + "]: for page: ["
+            + persona.getPageId() + "]: host pattern: [" + hostPatternKey
+            + "] collecting.");
+        String existingHostPattern = aggregate.getHostPatternKey() != null
+            && !aggregate.getHostPatternKey().equals("")
+                ? aggregate.getHostPatternKey() : "";
+        String newHostPattern = existingHostPattern + " "
+            + persona.getHostPatternKey();
+        aggregate.setHostPatternKey(newHostPattern);
         aggregate.getUsernames().addAll(persona.getUsernames());
-      }
-      else{
-        LOG.warning("Page Id: [" + persona.getPageId() + "]: No personas extracted.");
+      } else {
+        LOG.warning(
+            "Page Id: [" + persona.getPageId() + "]: No personas extracted.");
       }
     }
-    
+
     return aggregate;
 
   }

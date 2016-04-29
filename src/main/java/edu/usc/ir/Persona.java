@@ -17,7 +17,6 @@
 
 package edu.usc.ir;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +27,13 @@ public class Persona {
   private List<String> usernames;
 
   private String pageId;
+  
+  private String hostPatternKey;
 
   @SuppressWarnings("unchecked")
   public Persona() {
     this.pageId = null;
+    this.hostPatternKey = null;
     this.usernames = (List<String>)SetUniqueList.decorate(new ArrayList<String>());
   }
 
@@ -64,7 +66,20 @@ public class Persona {
     this.pageId = pageId;
   }
 
+  /**
+   * @return the hostPatternKey
+   */
+  public String getHostPatternKey() {
+    return hostPatternKey;
+  }
 
+  /**
+   * @param hostPatternKey the hostPatternKey to set
+   */
+  public void setHostPatternKey(String hostPatternKey) {
+    this.hostPatternKey = hostPatternKey;
+  }
+  
 
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
@@ -74,11 +89,14 @@ public class Persona {
     StringBuilder builder = new StringBuilder();
     builder.append("[pageId=");
     builder.append(this.pageId);
+    builder.append(",hostPatternKey=");
+    builder.append(this.hostPatternKey);
     builder.append(",personas=");
     builder.append(this.usernames.toString());
     builder.append("]");
     return builder.toString();
     
   }
+  
  
 }

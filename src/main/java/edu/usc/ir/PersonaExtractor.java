@@ -74,16 +74,29 @@ public class PersonaExtractor {
   public Map<String, Persona> obtainPersonasForAllHosts()
       throws FailingHttpStatusCodeException, MalformedURLException,
       IOException {
-    if (this.patterns == null || (this.patterns != null && this.patterns.isEmpty()))
+    if (this.patterns == null
+        || (this.patterns != null && this.patterns.isEmpty()))
       initPatterns();
 
     Map<String, Persona> personaMap = new HashMap<String, Persona>();
-    LOG.info("Scanning patterns: Num Patterns: ["+this.patterns.keySet().size()+"]: Config File: ["+this.configFile.getAbsolutePath()+"]");
+    LOG.info(
+        "Scanning patterns: Num Patterns: [" + this.patterns.keySet().size()
+            + "]: Config File: [" + this.configFile.getAbsolutePath() + "]");
     for (String patternKey : this.patterns.keySet()) {
-      LOG.info("Extracting persons for pattern: ["+this.patterns.get(host)+"]: hostKey: ["+host+"]");
-      Persona persona = obtainPersonas(patternKey);
-      LOG.info("Extracted persona: "+persona);
-      personaMap.put(patternKey, persona);
+      boolean skipPattern = false;
+      if (this.host != null && !patternKey.equals(host)) skipPattern = true;
+        if (!skipPattern){
+          LOG.info("Extracting persons for pattern: [" + this.patterns.get(host)
+              + "]: hostPatternKey: [" + patternKey + "]");
+          Persona persona = obtainPersonas(patternKey);
+          LOG.info("Extracted persona: " + persona);
+          personaMap.put(patternKey, persona);
+        }
+        else{
+          LOG.warning("Filtering patternKey: [" + patternKey
+              + "]: selected host patterns: [" + this.host
+              + "]: skipping persona extraction.");
+        }
     }
 
     return personaMap;
@@ -92,58 +105,55 @@ public class PersonaExtractor {
   public Persona obtainPersonas(String host)
       throws FailingHttpStatusCodeException, MalformedURLException,
       IOException {
-    if (this.patterns == null || (this.patterns != null && this.patterns.isEmpty()))
+    if (this.patterns == null
+        || (this.patterns != null && this.patterns.isEmpty()))
       initPatterns();
-    
+
     WebClient webClient = new WebClient();
     webClient.getOptions().setJavaScriptEnabled(false);
     webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
     webClient.getOptions().setThrowExceptionOnScriptError(false);
     HtmlPage htmlPage = null;
     Persona persona = new Persona();
+    persona.setHostPatternKey(host);
+    ;
     persona.setPageId(page.toURI().toString());
 
-    try{
+    try {
       htmlPage = webClient.getPage(page.toURL());
-    }
-    catch(Exception e){
+    } catch (Exception e) {
       e.printStackTrace(System.out);
       webClient.close();
       return persona;
     }
-    
+
     String pattern = patterns.get(host);
     boolean isAnchor = false;
-    if (pattern.contains("@href")){
+    if (pattern.contains("@href")) {
       isAnchor = true;
     }
 
-    List<?> elements = htmlPage
-        .getByXPath(patterns.get(host));
+    List<?> elements = htmlPage.getByXPath(patterns.get(host));
     for (int i = 0; i < elements.size(); i++) {
       String username = null;
-      if (isAnchor){
-        String link = ((HtmlAnchor)elements.get(i)).getHrefAttribute();
+      if (isAnchor) {
+        String link = ((HtmlAnchor) elements.get(i)).getHrefAttribute();
         if (isUserLink(link)) {
           int index = link.lastIndexOf('/');
           username = link.substring(index + 1);
-        }        
+        }
+      } else {
+        if (elements.get(i) instanceof String) {
+          username = ((String) elements.get(i)).trim();
+        } else {
+          username = ((DomNode) elements.get(i)).asText();
+        }
       }
-      else{
-         if (elements.get(i) instanceof String){
-           username = ((String)elements.get(i)).trim();
-         }
-         else{
-          username = ((DomNode)elements.get(i)).asText();
-         }
-      }
-      
-      if (username != null && 
-          !username.equals("")){
+
+      if (username != null && !username.equals("")) {
         persona.getUsernames().add(username);
       }
 
-    
     }
 
     webClient.close();
@@ -168,8 +178,7 @@ public class PersonaExtractor {
         }
       } else {
         persona = extractor.obtainPersonas(extractor.getHost());
-        LOG.info(
-            "Host: [" + host + "]: Personas: " + persona.getUsernames());
+        LOG.info("Host: [" + host + "]: Personas: " + persona.getUsernames());
       }
 
     } catch (CmdLineException e) {
@@ -197,9 +206,10 @@ public class PersonaExtractor {
     if (this.configFile != null) {
       Properties props = new Properties();
       props.load(new FileInputStream(this.configFile));
-      for (Object prop :  props.keySet()) {
-        String propString = (String)prop;
-        LOG.finest("Adding pattern: ["+props.getProperty(propString)+"] for host: ["+propString+"]");
+      for (Object prop : props.keySet()) {
+        String propString = (String) prop;
+        LOG.finest("Adding pattern: [" + props.getProperty(propString)
+            + "] for host: [" + propString + "]");
         this.patterns.put(propString, props.getProperty(propString));
       }
     }
