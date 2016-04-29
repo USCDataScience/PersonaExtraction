@@ -29,8 +29,7 @@
 	</developers>
 	<scm>
 		<url>https://github.com/USCDataScience/PersonaExtraction.git</url>
-		<connection>scm:git:git://github.com/USCDataScience/PersonaExtraction.git</connection>
-	  <tag>0.2</tag>
+		<connection>scm:git:git@github.com/USCDataScience/PersonaExtraction.git</connection>
   </scm>
 
 
