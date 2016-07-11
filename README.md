@@ -20,7 +20,7 @@ To run the extractor, do the following:
  1. Run `src/main/bin/persona_extract $HOST $PAGE`
 
 The `$HOST` parameter defines what host patterns to pull from 
-`src/main/resources/patterns.conf`, e.g., `www.hipointfirearmsforums.com`.
+`src/main/resources/patterns.properties`, e.g., `www.hipointfirearmsforums.com`.
 The `$PAGE` parameter is a path to a downloaded or already available web
 page that you would like to extract from.
 
@@ -33,7 +33,7 @@ so, run the following:
 
  1. Run `src/main/bin/persona_indexer $HOST $DIR $SOLR_URL`
  
-$HOST should be the patterns to select based on `src/main/resources/patterns.conf`.
+$HOST should be the patterns to select based on `src/main/resources/patterns.properties`.
 $DIR is a directory of HTML files to scan and then perform persona extraction on,
 for each file.
 $SOLR_URL should be the full path to your solr index, e.g., 
