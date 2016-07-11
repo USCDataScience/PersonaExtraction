@@ -8,7 +8,7 @@ unstructured text.
 Getting Started
 ===============
 
- 1. `git clone https://github.com/USCDataScience/PersonaExtraction.git1`
+ 1. `git clone https://github.com/USCDataScience/PersonaExtraction.git`
  2. `cd PersonaExtraction`
  3. `mvn install assembly:assembly`
  
